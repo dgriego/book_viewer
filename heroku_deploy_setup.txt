@@ -1,0 +1,24 @@
+## only want this file to be used for development
+require "sinatra/reloader" if development?
+
+## specify ruby version
+ruby "2.2.3"
+
+## use puma as webserver, specify production only for gem
+group :production do
+  gem "puma"
+end
+
+## create a config.ru that tells the web server, puma,
+## how to start the application
+require "./book_viewer"
+run Sinatra::Application
+
+## creat Procfile in root
+web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
+## this is done inline, but for larger apps
+## generating a config file is recommended by heroku
+web: bundle exec puma -C config/puma.rb
+
+## test locally
+heroku local
